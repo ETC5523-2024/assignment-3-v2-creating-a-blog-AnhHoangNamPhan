@@ -1,12 +1,122 @@
 ---
-title: "Welcome To My Blog Template"
-author: "Emi Tanaka"
-date: "2022-07-18"
-categories: [news]
+title: "Best Chocolate Brands for Carnegie IGA Retail"
+author: "Anh Phan"
+date: "2024-10-06"
+categories: [business, data-analysis, chocolate]
 ---
 
-This is the first post in a Quarto blog. Welcome!
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(knitr)
+library(kableExtra)
+library(tidyverse)
+library(ggplot2)
+```
 
-![](thumbnail.jpg)
+<div style="text-align: center;">
+  ![](chocolate.jpg){width=39% style="margin-bottom: 20px; border-radius: 10px;"}
+</div>
 
+As a member of the IGA grocery team in Carnegie, Melbourne, I recently undertook a study to identify the best chocolate brands to stock in the store. According to 2021 Australia Census, Carnegie has very diverse population, including a significant number of Colombian customers who often visit our store for their favorite goods. To cater to the local market effectively, I set out to explore chocolate brands based on various factors to guide our purchasing decisions.
 
+The data for this analysis was sourced from the [Flavors of Cacao](https://flavorsofcacao.com/flavor.html) website, which contains ratings for over 2,000 dark chocolate bars. It includes details about the company, country of origin, cocoa percentage, and ratings. Before diving into the analysis, let's have a look at @tbl-data-dictionary to see the key variables in the dataset:
+
+```{r, echo=FALSE, message=FALSE, warning=FALSE}
+#| label: tbl-data-dictionary
+#| tbl-cap: "Data Dictionary for Chocolate Dataset"
+
+data_dictionary <- data.frame(
+  Variable = c("ref", "company_manufacturer", "company_location", "review_date", "country_of_bean_origin",
+               "specific_bean_origin_or_bar_name", "cocoa_percent", "ingredients", 
+               "most_memorable_characteristics", "rating"),
+  Description = c("Reference ID; the highest numbers indicate latest entries.",
+                  "Name of the company and the manufacturer.",
+                  "Location where the company is based.",
+                  "Year the chocolate bar was reviewed.",
+                  "Country where the cocoa beans originated.",
+                  "Specific bean or bar name.",
+                  "Cocoa percentage (% chocolate).",
+                  "Ingredients (e.g., B = Beans, S = Sugar, C = Cocoa Butter).",
+                  "Summary of the bar's most memorable characteristics.",
+                  "Rating on a scale from 1 to 5.")
+)
+kable(data_dictionary)
+``` 
+
+```{r,include = FALSE}
+# Load the dataset
+chocolate_data <- read.csv("data/chocolate.csv") %>%
+  mutate(cocoa_percent = as.numeric(str_remove(cocoa_percent, "%"))) %>%  # remove the "%" for data wrangling
+  mutate(review_date = as.Date(paste0(review_date, "-01-01"))) # Assuming year is the only component
+```
+
+Firstly, my analysis focus on top chocolate companies based on their average ratings. For this, I filtered out companies with fewer than 10 reviews and considered only those with an average rating above 3.25 to ensure the top-rated chocolates. From distribution of these ratings, visualized in @fig-1, we can infer that Idilio and Soma are standout premium chocolate companies, each maintaining a consistent average rating above 3.5.
+
+```{r echo=FALSE, message=FALSE, warning=FALSE, fig.pos='H'}
+#| label: fig-1
+#| fig-cap: "Distribution of Ratings by Chocolate Company"
+
+companies <- chocolate_data %>%
+  rowwise() %>%
+  mutate(company = str_trim(str_split(company_manufacturer, '\\(')[[1]][1])) %>% # get the company name
+  group_by(company) %>% 
+  filter(n() >= 10) %>% # filter companies with 10 reviews or higher
+  mutate(avg = mean(rating))
+
+companies  %>%
+  filter(avg >= 3.25) %>% 
+  ggplot(aes(x = reorder(as.factor(company), rating, FUN = mean), y = rating)) + 
+  geom_count(alpha = .1) + 
+  geom_point(aes(x = as.factor(company), y = avg, colour = avg)) + 
+  theme_minimal() + 
+  coord_flip() + 
+  labs(title = "Distribution of Ratings by Chocolate Company", x = 'Company', y = 'Rating') + 
+  scale_color_continuous(name = 'Average rating', breaks = seq(3,4,.2)) + 
+  scale_size_continuous(name = 'Number of ratings', breaks = seq(0,14,4)) 
+```
+
+I then examined whether there was a relationship between cocoa percentage and the chocolate ratings. Interestingly, @fig-2 shows a negative trend: higher cocoa content tends to be associated with lower ratings. This suggests that consumers would prefer chocolates with a balanced flavor, and other ingredients besides cocoa content also play a crucial role in customer satisfaction.
+
+```{r, echo=FALSE, message = FALSE, warning = FALSE, fig.pos='H'}
+#| label: fig-2
+#| fig-cap: "Relationship Between Cocoa Percentage and Rating"
+
+ggplot(chocolate_data, aes(x = cocoa_percent, y = rating)) +
+  geom_jitter(alpha = 0.5) +
+  geom_smooth(method = "lm",se = FALSE, color = "red") +
+  labs(title = "Relationship Between Cocoa Percentage and Rating", x = "Cocoa Percentage", y = "Rating")
+```
+
+Taking into account local preferences, I analyzed chocolate brands originating from Australia and Colombia, since there is very few chocolate brands from other nationalities in Carnegie (India, China, Greece, Malysia, etc.) and they are not highly rated. Brands from Australia and Colombia in @fig-3 consistently ranked high in terms of quality and ratings, suggesting that stocking chocolates from these countries would be well-aligned with the tastes of our local customers.
+
+```{r, echo=FALSE, warning=FALSE, message=FALSE, fig.pos='H'}
+#| label: fig-3
+#| fig-cap: "Chocolate Ratings based on Local Resident Nationality"
+
+# Filter for key countries of origin
+local_chocolate_focus <- chocolate_data %>%
+  rowwise() %>%
+  mutate(company = str_trim(str_split(company_manufacturer, '\\(')[[1]][1])) %>%
+  filter(company_location %in% c("Australia", "Colombia")) %>% 
+  group_by(company_manufacturer) %>%
+  mutate(average_rating = mean(rating, na.rm = TRUE)) 
+
+# Box plot to show distribution
+ggplot(local_chocolate_focus, aes(x = reorder(company, average_rating), y = rating, fill = company_location)) +
+  geom_boxplot() +  
+  coord_flip() +
+  facet_wrap(~ company_location, scales = "free_y") +
+  labs(
+    title = "Chocolate Ratings based on Local Resident Nationalities",
+    x = "Company",
+    y = "Average Rating"
+  ) 
+```
+
+In summary, this analysis provides several meaningful insights. Stocking premium chocolate brands like Idilio and Soma could greatly benefit our store due to their consistent high ratings and reputations. Additionally, chocolates with a balanced cocoa content would be more preferable rather than those with an excessively high percentage. Finally, including top-rated chocolates from Australia and Colombia would likely resonate with our local customer base, enhancing customer satisfaction and optimizing sales.
+
+### References
+
+- Australian Bureau of Statistics - Carnegie 2021. https://www.abs.gov.au/census/find-census-data/quickstats/2021/SAL20498.
+
+- Flavors of Cacao. https://flavorsofcacao.com/. 

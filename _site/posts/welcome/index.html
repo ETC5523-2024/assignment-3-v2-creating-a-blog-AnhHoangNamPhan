@@ -6,10 +6,10 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
-<meta name="author" content="Emi Tanaka">
-<meta name="dcterms.date" content="2022-07-18">
+<meta name="author" content="Anh Phan">
+<meta name="dcterms.date" content="2024-10-06">
 
-<title>Anh Phan’s Portfolio - Welcome To My Blog Template</title>
+<title>Anh Phan’s Portfolio - Best Chocolate Brands for Carnegie IGA Retail</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -110,9 +110,11 @@ ul.task-list li input[type="checkbox"] {
 <header id="title-block-header" class="quarto-title-block default page-columns page-full">
   <div class="quarto-title-banner page-columns page-full">
     <div class="quarto-title column-body">
-      <h1 class="title">Welcome To My Blog Template</h1>
+      <h1 class="title">Best Chocolate Brands for Carnegie IGA Retail</h1>
                                 <div class="quarto-categories">
-                <div class="quarto-category">news</div>
+                <div class="quarto-category">business</div>
+                <div class="quarto-category">data-analysis</div>
+                <div class="quarto-category">chocolate</div>
               </div>
                   </div>
   </div>
@@ -123,14 +125,14 @@ ul.task-list li input[type="checkbox"] {
       <div>
       <div class="quarto-title-meta-heading">Author</div>
       <div class="quarto-title-meta-contents">
-               <p>Emi Tanaka </p>
+               <p>Anh Phan </p>
             </div>
     </div>
       
       <div>
       <div class="quarto-title-meta-heading">Published</div>
       <div class="quarto-title-meta-contents">
-        <p class="date">July 18, 2022</p>
+        <p class="date">October 6, 2024</p>
       </div>
     </div>
     
@@ -149,10 +151,133 @@ ul.task-list li input[type="checkbox"] {
 
 
 
-<p>This is the first post in a Quarto blog. Welcome!</p>
-<p><img src="thumbnail.jpg" class="img-fluid"></p>
+<div style="text-align: center;">
+<p><img src="chocolate.jpg" class="img-fluid" style="margin-bottom: 20px; border-radius: 10px;;width:39.0%"></p>
+</div>
+<p>As a member of the IGA grocery team in Carnegie, Melbourne, I recently undertook a study to identify the best chocolate brands to stock in the store. According to 2021 Australia Census, Carnegie has very diverse population, including a significant number of Colombian customers who often visit our store for their favorite goods. To cater to the local market effectively, I set out to explore chocolate brands based on various factors to guide our purchasing decisions.</p>
+<p>The data for this analysis was sourced from the <a href="https://flavorsofcacao.com/flavor.html">Flavors of Cacao</a> website, which contains ratings for over 2,000 dark chocolate bars. It includes details about the company, country of origin, cocoa percentage, and ratings. Before diving into the analysis, let’s have a look at <a href="#tbl-data-dictionary" class="quarto-xref">Table&nbsp;1</a> to see the key variables in the dataset:</p>
+<div class="cell">
+<div id="tbl-data-dictionary" class="cell quarto-float anchored">
+<figure class="quarto-float quarto-float-tbl figure">
+<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="tbl-data-dictionary-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Table&nbsp;1: Data Dictionary for Chocolate Dataset
+</figcaption>
+<div aria-describedby="tbl-data-dictionary-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div class="cell-output-display">
+<table class="do-not-create-environment cell table table-sm table-striped small">
+<colgroup>
+<col style="width: 35%">
+<col style="width: 64%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Variable</th>
+<th style="text-align: left;">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">ref</td>
+<td style="text-align: left;">Reference ID; the highest numbers indicate latest entries.</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">company_manufacturer</td>
+<td style="text-align: left;">Name of the company and the manufacturer.</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">company_location</td>
+<td style="text-align: left;">Location where the company is based.</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">review_date</td>
+<td style="text-align: left;">Year the chocolate bar was reviewed.</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">country_of_bean_origin</td>
+<td style="text-align: left;">Country where the cocoa beans originated.</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">specific_bean_origin_or_bar_name</td>
+<td style="text-align: left;">Specific bean or bar name.</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">cocoa_percent</td>
+<td style="text-align: left;">Cocoa percentage (% chocolate).</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">ingredients</td>
+<td style="text-align: left;">Ingredients (e.g., B = Beans, S = Sugar, C = Cocoa Butter).</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">most_memorable_characteristics</td>
+<td style="text-align: left;">Summary of the bar’s most memorable characteristics.</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">rating</td>
+<td style="text-align: left;">Rating on a scale from 1 to 5.</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</figure>
+</div>
+</div>
+<p>Firstly, my analysis focus on top chocolate companies based on their average ratings. For this, I filtered out companies with fewer than 10 reviews and considered only those with an average rating above 3.25 to ensure the top-rated chocolates. From distribution of these ratings, visualized in <a href="#fig-1" class="quarto-xref">Figure&nbsp;1</a>, we can infer that Idilio and Soma are standout premium chocolate companies, each maintaining a consistent average rating above 3.5.</p>
+<div class="cell">
+<div class="cell-output-display">
+<div id="fig-1" class="quarto-figure quarto-figure-center quarto-float anchored" data-fig-pos="H">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-1-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="index_files/figure-html/fig-1-1.png" class="img-fluid figure-img" data-fig-pos="H" width="672">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-1-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;1: Distribution of Ratings by Chocolate Company
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>I then examined whether there was a relationship between cocoa percentage and the chocolate ratings. Interestingly, <a href="#fig-2" class="quarto-xref">Figure&nbsp;2</a> shows a negative trend: higher cocoa content tends to be associated with lower ratings. This suggests that consumers would prefer chocolates with a balanced flavor, and other ingredients besides cocoa content also play a crucial role in customer satisfaction.</p>
+<div class="cell">
+<div class="cell-output-display">
+<div id="fig-2" class="quarto-figure quarto-figure-center quarto-float anchored" data-fig-pos="H">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-2-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="index_files/figure-html/fig-2-1.png" class="img-fluid figure-img" data-fig-pos="H" width="672">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-2-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;2: Relationship Between Cocoa Percentage and Rating
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>Taking into account local preferences, I analyzed chocolate brands originating from Australia and Colombia, since there is very few chocolate brands from other nationalities in Carnegie (India, China, Greece, Malysia, etc.) and they are not highly rated. Brands from Australia and Colombia in <a href="#fig-3" class="quarto-xref">Figure&nbsp;3</a> consistently ranked high in terms of quality and ratings, suggesting that stocking chocolates from these countries would be well-aligned with the tastes of our local customers.</p>
+<div class="cell">
+<div class="cell-output-display">
+<div id="fig-3" class="quarto-figure quarto-figure-center quarto-float anchored" data-fig-pos="H">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-3-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="index_files/figure-html/fig-3-1.png" class="img-fluid figure-img" data-fig-pos="H" width="672">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-3-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;3: Chocolate Ratings based on Local Resident Nationality
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>In summary, this analysis provides several meaningful insights. Stocking premium chocolate brands like Idilio and Soma could greatly benefit our store due to their consistent high ratings and reputations. Additionally, chocolates with a balanced cocoa content would be more preferable rather than those with an excessively high percentage. Finally, including top-rated chocolates from Australia and Colombia would likely resonate with our local customer base, enhancing customer satisfaction and optimizing sales.</p>
+<section id="references" class="level3">
+<h3 class="anchored" data-anchor-id="references">References</h3>
+<ul>
+<li><p>Australian Bureau of Statistics - Carnegie 2021. https://www.abs.gov.au/census/find-census-data/quickstats/2021/SAL20498.</p></li>
+<li><p>Flavors of Cacao. https://flavorsofcacao.com/.</p></li>
+</ul>
 
 
+</section>
 
 </main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">
