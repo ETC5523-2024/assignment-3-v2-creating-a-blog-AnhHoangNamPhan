@@ -1,0 +1,51 @@
+/* css styles */
+
+/* Navbar and title banner */
+.navbar-dark, .quarto-title-banner {
+  background-color: #006DAE;
+}
+
+/* Change the background color of the entire page */
+body {
+  background-color: #f4f4f9;
+  color: #333;
+  font-family: 'Arial', sans-serif;
+}
+
+/* Change heading colors */
+h1, h2, h3, h4, h5, h6 {
+  color: #006DAE;
+}
+
+/* Change link colors */
+a {
+  color: #006DAE;
+}
+
+a:hover {
+  color: #004080;
+  text-decoration: underline;
+}
+
+/* Change the text color in the navigation bar */
+.navbar-dark .navbar-nav .nav-link {
+  color: #ffffff;
+}
+
+.navbar-dark .navbar-nav .nav-link:hover {
+  color: #ffcc00;
+}
+
+/* Footer styling */
+.quarto-footer {
+  background-color: #006DAE;
+  color: #ffffff;
+  padding: 10px;
+  text-align: center;
+}
+
+/* Add a border to images */
+img {
+  border: 2px solid #006DAE;
+  border-radius: 5px;
+}
